@@ -1,5 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
+import json
+import os
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -11,6 +13,7 @@ class Window(QtWidgets.QMainWindow):
         self.pages = {}
         self.register(MainWindow(), "main")
         self.register(BudgetWindow(), "view budgets")
+        self.register(HelpWindow(), "help")
         self.register(ProjectionWindow(), "view projection")
         
         self.goto("main")
@@ -46,24 +49,28 @@ class MainWindow(PageWindow):
         self.setFixedSize(1200, 800)
         self.window_width = int(self.width())
         self.window_height = int(self.height())
-        self.UiComponents()
+        self.place_buttons()
         
         
-    def UiComponents(self):
+    def place_buttons(self):
         
         width = int(self.window_width * 0.3)
         height = int(self.window_width * 0.1)
         
-        view_budget_button = QtWidgets.QPushButton("View Budgets", self)
+        view_budget_button = QtWidgets.QPushButton("View Budget", self)
         view_budget_button.resize(width, height)
         view_budget_button.move(self.center(self.window_width, width), height)
         view_budget_button.clicked.connect(lambda: self.goto('view budgets'))
         
         create_budget_button = QtWidgets.QPushButton("View Projections", self)
         create_budget_button.resize(width, height)
-        create_budget_button.move(self.center(self.window_width, width), int(height + height + height * 0.5))
+        create_budget_button.move(self.center(self.window_width, width), int(height*2 + height * 0.5))
         create_budget_button.clicked.connect(lambda: self.goto('view projection'))
         
+        how_to_use_button = QtWidgets.QPushButton("How to use", self)
+        how_to_use_button.resize(width, height)
+        how_to_use_button.move(self.center(self.window_width, width), int(height*4))
+        how_to_use_button.clicked.connect(lambda: self.goto('help'))
         
 
         
@@ -78,35 +85,101 @@ class MainWindow(PageWindow):
 class BudgetWindow(PageWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Budget")
+        self.setWindowTitle("Budget Insights")
         self.setFixedSize(1200, 800)
         self.window_width = int(self.width())
         self.window_height = int(self.height())
-        self.UiComponents()
+        self.mint_csv = None
+        self.load_json()
+        self.place_buttons()
         
         
-    def UiComponents(self):
+    def place_buttons(self):
         back_button = QtWidgets.QPushButton("Back", self)
         back_button.resize(100, 50)
         back_button.move(10, self.window_height-60)
         back_button.clicked.connect(lambda: self.goto('main'))
+        self.step_label = False
+        self.step_instructions = False
+        if self.config['existing_budget'] == '':
+            if self.config['mint_csv'] == '':
+                self.step_label = QtWidgets.QLabel('Step 1', self)
+                self.step_label.setFont(QtGui.QFont("Helvitca", 26))
+                self.step_label.resize(150, 100)
+                self.step_label.move(25, 25)
+                self.step_instructions = QtWidgets.QLabel('Download Intuit Mint .csv by going to "All Transacations"\nand selecting "Export Transactions", then upload here ->', self)
+                self.step_instructions.setFont(QtGui.QFont("Helvitca", 14))
+                self.step_instructions.resize(600, 100)
+                self.step_instructions.move(175, 25)
+                
+                self.button = QtWidgets.QPushButton("Select csv", self)
+                self.button.clicked.connect(lambda: self.select_file())
+                self.button.resize(200,100)
+                self.button.move(800, 25)
+            else:
+                if not self.step_label:
+                    self.step_label = QtWidgets.QLabel('Step 2', self)
+                    self.step_label.setFont(QtGui.QFont("Helvitca", 26))
+                    self.step_label.resize(150, 100)
+                    self.step_label.move(25, 25)
+                else:
+                    self.step_label.setText('Step 2')
+                if not self.step_instructions:
+                    self.step_instructions = QtWidgets.QLabel('Provide a balance for each account recognized in your transactions,\nand add accounts that were not recognized.', self)
+                    self.step_instructions.setFont(QtGui.QFont("Helvitca", 14))
+                    self.step_instructions.resize(600, 100)
+                    self.step_instructions.move(175, 25)
+                else:
+                    self.step_instructions.setText('Provide a balance for each account recognized in your transactions,\nand add accounts that were not recognized.')
+    
+    def select_file(self):
+        # self.mint_csv = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', os.getcwd())
+        self.config['mint_csv'] = 'done'
+        json.dump(self.config, open(os.getcwd() + '/config.json', 'w'))
+        self.place_buttons()
+    
+    def load_json(self):
+        path = os.getcwd() + '/config.json'
+        try:
+            self.config = json.load(open(path))
+        except:
+            self.config = {}
+        if 'mint_csv' not in self.config:
+            self.config['mint_csv'] = ''
+        if 'existing_budget' not in self.config:
+            self.config['existing_budget'] = ''
+        
     
 class ProjectionWindow(PageWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("projections")        
+        self.setWindowTitle("Projections")        
         self.setFixedSize(1200, 800)
         self.window_width = int(self.width())
         self.window_height = int(self.height())
-        self.UiComponents()
+        self.place_buttons()
         
         
-    def UiComponents(self):
+    def place_buttons(self):
         back_button = QtWidgets.QPushButton("Back", self)
         back_button.resize(100, 50)
         back_button.move(10, self.window_height-60)
         back_button.clicked.connect(lambda: self.goto('main'))
-
+        
+class HelpWindow(PageWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Help")
+        self.setFixedSize(1200, 800)
+        self.window_width = int(self.width())
+        self.window_height = int(self.height())
+        self.place_buttons()
+        
+    def place_buttons(self):
+        back_button = QtWidgets.QPushButton("Back", self)
+        back_button.resize(100, 50)
+        back_button.move(10, self.window_height-60)
+        back_button.clicked.connect(lambda: self.goto('main'))
 # class AddWindow(PageWindow):
 #     def __init__(self):
 #         super().__init__()
@@ -114,9 +187,9 @@ class ProjectionWindow(PageWindow):
 
 #     def initUI(self):
 #         self.setWindowTitle("Add functions")
-#         self.UiComponents()
+#         self.place_buttons()
 
-#     def UiComponents(self):
+#     def place_buttons(self):
 #         # several text boxes for adding functions will be here
 #         self.backButton = QtWidgets.QPushButton("Back", self)
 #         self.backButton.resize(80, 30)

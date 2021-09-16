@@ -1,0 +1,10 @@
+*.pyc
+*.sql
+*.sqlite3
+*.sqlite3-journal
+/virtualenv
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+*.db
