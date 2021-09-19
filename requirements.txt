@@ -1,0 +1,4 @@
+pylint==2.10.2
+PyQt5==5.15.4
+pyinstaller==4.5.1
+matplotlib==3.4.3

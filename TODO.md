@@ -6,7 +6,7 @@ Project Description
 
 ### Todo
 
-- [ ] Create home page with buttons  
+- [ ] Allow export to csv  
 - [ ] Look into displaying data in a table and graph in PyQT  
 - [ ] Look into importing mint files  
 - [ ] Write model that processes mint data into relevant information for a table/graph  
@@ -19,4 +19,8 @@ Project Description
 
 ### Done ✓
 
+- [x] Create projections menu and link to budgets  
+- [x] Create db helper file for sql commands  
+- [x] Create budget with expenses  
+- [x] Create home page with buttons  
 
