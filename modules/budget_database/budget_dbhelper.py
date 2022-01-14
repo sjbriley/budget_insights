@@ -6,6 +6,10 @@ import sys
 import os
 import json
 
+# insert path two directories up (main project dir)
+import os.path
+sys.path.insert(0, os.path.join(__file__ ,"../.."))
+
 class BudgetDatabase():
     """Allows user to connect to database using sqlite and
     make changes or get strored information"""
@@ -15,7 +19,12 @@ class BudgetDatabase():
         self.create_db()
 
     def create_db(self):
-        """Executes command to create budgets if not exists"""
+        """Executes command to create budgets table if not exists
+        
+        Returns:
+            bool: pass or fail
+            
+        """
         try:
             # create budgets table
             command = ('''CREATE TABLE IF NOT EXISTS budgets (
@@ -34,9 +43,14 @@ class BudgetDatabase():
 
     def create_budget(self, name, accounts):
         """Inserts row into budget table with new budget
-        Parameters:
+        
+        Args:
             name (str): name of budget
-            accoutns (str): a str which contains list of dictionaries
+            accounts (str): a str which contains list of dictionaries
+            
+        Returns:
+            bool: pass or fail
+            
         """
         try:
             # check if name already exists
@@ -59,10 +73,13 @@ class BudgetDatabase():
 
     def get_id_by_name(self, name):
         """Returns id of a budget by it's name
-        Parameters:
+        
+        Args:
             name (str): name of budget
+            
         Returns:
-            results (str): the ID associated with the budget
+            str: the ID associated with the budget
+            
         """
         try:
             command = "SELECT Budget_id FROM budgets WHERE Name = ?"
@@ -74,14 +91,19 @@ class BudgetDatabase():
             return False
 
     def update_expenses(self, name, expenses):
-        """Inserts expenses into budget
-        inputs:
+        """Inserts expenses into the budget database
+        
+        Args:
             name (str): name of budget
             expenses (str): list of expenses
+            
+        Returns:
+            bool: pass or fail
+            
         """
         try:
             expenses = json.dumps(expenses)
-            command = 'UPDATE budgets SET Expenses = ? WHERE Name = ?;'
+            command = """UPDATE budgets SET Expenses = ? WHERE Name = ?;"""
             self.cur.execute(command, (expenses, name))
             self.con.commit()
             return True
@@ -91,10 +113,14 @@ class BudgetDatabase():
 
     def get_by_name(self, name):
         """Searches table budgets by name
-        parameters:
+        
+        Args:
             name (str): name of budget
-        returns:
-            results (list): information associated with budget"""
+            
+        Returns:
+            list: information associated with budget
+            
+        """
         try:
             command = "SELECT * FROM budgets WHERE Name = ?"
             self.cur.execute(command, (name,))
@@ -105,7 +131,12 @@ class BudgetDatabase():
             return False
 
     def get_all_budgets(self):
-        """Returns results (list) containing all budgets"""
+        """Returns every row contained in budgets table
+        
+        Returns:
+            list: contains every row in budgets table
+            
+        """
         command = "SELECT * FROM budgets"
         self.cur.execute(command)
         results = self.cur.fetchall()
@@ -113,10 +144,13 @@ class BudgetDatabase():
 
     def get_accounts_by_name(self, name):
         """Returns accounts for a budget
-        parameters:
+        
+        Args:
             name (str): name of budget
-        returns
-            results (list): accounts
+            
+        Returns:
+            list: account information associated with name
+            
         """
         try:
             command = "SELECT Account FROM budgets where Name = ?"
@@ -129,10 +163,13 @@ class BudgetDatabase():
 
     def get_expenses_by_name(self, name):
         """Returns expenses for a budget
-        parameters:
+        
+        Args:
             name (str): name of budget
-        returns
-            results (list): expenses
+            
+        Returns:
+            list: expenses associated with name
+            
         """
         try:
             command = "SELECT Expenses FROM budgets where Name = ?"
@@ -145,13 +182,18 @@ class BudgetDatabase():
 
     def update_accounts(self, name, accounts):
         """Updates accounts for an existing budget
-        parameters:
+        
+        Args:
             name (str): name of budget
             accounts (str): new accounts
+            
+        Returns:
+            bool: pass or fail
+            
         """
         try:
             accounts = json.dumps(accounts)
-            command = """UPDATE budgets SET Account = ?, Name = ?;"""
+            command = """UPDATE budgets SET Account = ? WHERE Name = ?;"""
             self.cur.execute(command, (accounts, name))
             self.con.commit()
             return True
@@ -160,10 +202,19 @@ class BudgetDatabase():
             return False
 
     def delete_table(self):
-        """Deletes entire tables from database"""
-        command = "DROP TABLE budgets"
-        self.cur.execute(command)
-        self.con.commit()
+        """Deletes entire tables from database
+        
+        Returns:
+            bool: pass or fail
+            
+        """
+        try:
+            command = "DROP TABLE budgets"
+            self.cur.execute(command)
+            self.con.commit()
+            return True
+        except:
+            return False
 
     def __del__(self):
         """Closes the database on deletion of instance"""

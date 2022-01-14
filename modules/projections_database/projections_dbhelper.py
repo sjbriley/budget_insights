@@ -3,6 +3,12 @@ changes to budget.db
 """
 import sqlite3
 import json
+import sys
+
+# insert path two directories up (main project dir)
+import os.path
+sys.path.insert(0, os.path.join(__file__ ,"../.."))
+
 
 class ProjectionsDatabase():
     """Allows user to connect to database using sqlite and
