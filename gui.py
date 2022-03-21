@@ -21,7 +21,7 @@ BACKGROUND_COLOR_1 = 'SlateGray4'
 BACKGROUND_COLOR_2 = 'SlateGray3'
 GEOMETRY = "1000x700"
 
-def center(size: int, width: Optional[bool] = True) -> int:
+def center(size: int, width: bool = True) -> int:
     """Returns the center based on given size and current window
 
     Args:
@@ -43,7 +43,7 @@ class Application(tk.Frame):
     Allows for ease of changing views from one page to another,
     simplifying navigation.
     """
-    def __init__(self, master=None, budget_database=None, projections_database=None):
+    def __init__(self, master: tk.Tk, budget_database=None, projections_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -68,7 +68,7 @@ class Application(tk.Frame):
         quit_button = ttk.Button(self.master, text="Quit", command=self.master.destroy)
         quit_button.place(relx=0.9, rely=0.9, relwidth=0.08, relheight=0.08)
 
-    def change_view(self, destroy: tk.Frame, create: tk.Frame, budget:None, projection=None) -> None:
+    def change_view(self, destroy: tk.Frame, create: tk.Frame, budget: Optional[str] = None, projection=None) -> None:
         """Helper function for changing pages and destroying instances.
 
         Args:
@@ -108,7 +108,7 @@ class Home(Application):
     """Home page of application.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -122,7 +122,7 @@ class Home(Application):
         self.master = master
         self.place_buttons_and_text()
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page"""
         budget_button = ttk.Button(self.master, text="Budgets",
                                    command = lambda: self.change_view(self.master, Budget))
@@ -136,7 +136,7 @@ class Projections(Application):
     """Interface which displays all existing projections or ability to go to new one
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, projections_database=None, budget_database=None):
+    def __init__(self, master=None, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -150,7 +150,7 @@ class Projections(Application):
         self.master = master
         self.place_buttons_and_text()
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page
         """
         label = tk.Label(self.master, text="Projections", bg=BACKGROUND_COLOR_1)
@@ -200,7 +200,7 @@ class ViewProjection(Application):
             projection=None,
             projections_database=None,
             budget_database=None
-            ):
+            ) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -216,7 +216,7 @@ class ViewProjection(Application):
         self.projection = projection
         self.place_buttons_and_text()
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page"""
         label = tk.Label(self.master, text=self.projection, bg=BACKGROUND_COLOR_1)
         label.configure(font=LARGE_FONT)
@@ -226,7 +226,7 @@ class NewProjection(Application):
     """Interface which allows user to create projection
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -244,7 +244,7 @@ class NewProjection(Application):
         self.warning.configure(font=MEDIUM_FONT, fg='red', bg=BACKGROUND_COLOR_1)
         self.warning.place(relx=0.3, rely=0.8, relwidth=0.4, relheight=0.05)
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page
         """
         back_button = ttk.Button(self.master, text="Back",
@@ -280,7 +280,7 @@ class NewProjection(Application):
         submit_button = ttk.Button(self.master, text="Submit", command= self.submit)
         submit_button.place(relx=0.4, rely=0.85, relwidth=0.2, relheight=0.1)
 
-    def submit(self):
+    def submit(self) -> None:
         """submit the current projection
         """
         budget = str(self.budget_var.get())
@@ -300,7 +300,7 @@ class Budget(Application):
     """Interface which displays all existing budgets or ability to go to new one.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -314,7 +314,7 @@ class Budget(Application):
         self.master = master
         self.place_buttons_and_text()
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page"""
         label = tk.Label(self.master, text="Budgets", bg=BACKGROUND_COLOR_1)
         label.configure(font=LARGE_FONT)
@@ -359,7 +359,7 @@ class NewBudget(Application):
     """Interface which allows new budget to be created & account to be added.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, budget=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -387,7 +387,7 @@ class NewBudget(Application):
             self.name_entry.insert(0, budget)
             self.name_entry.configure(state=tk.DISABLED)
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page
         """
         # if instance of AdjustAccounts, back button should go back to ViewBudget
@@ -420,7 +420,7 @@ class NewBudget(Application):
         submit_button = ttk.Button(self.master, text="Next", command= self.submit_budget)
         submit_button.place(relx=0.4, rely=0.85, relwidth=0.2, relheight=0.1)
 
-    def place_account_details(self):
+    def place_account_details(self) -> None:
         """Places more buttons & labels which will be updated as user inputs accounts
         """
         # account details
@@ -485,7 +485,7 @@ class NewBudget(Application):
                                        command= lambda x: self.change_account())
         modify_option.place(relx=0.75, rely=0.71, relwidth=0.15, relheight=0.06)
 
-    def change_account(self):
+    def change_account(self) -> None:
         """Allows user to modify existing Account
         """
         if self.modify.get() == '':
@@ -507,7 +507,7 @@ class NewBudget(Application):
                 self.account_name_entry.insert(0, account['name'])
                 return
 
-    def submit_account(self):
+    def submit_account(self) -> None:
         """Allows user to submit account
         """
         account_name    = self.account_name_entry.get()
@@ -552,7 +552,7 @@ class NewBudget(Application):
         self.accounts.append(account)
         self.place_account_details()
 
-    def submit_budget(self):
+    def submit_budget(self) -> None:
         """Allows user to submit budget and go to expenses
         """
         self.submit_account()
@@ -572,7 +572,7 @@ class AddExpenses(Application):
     """Interface which allows expenses to be added to new budget.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master, budget=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -595,7 +595,7 @@ class AddExpenses(Application):
         self.place_buttons_and_text()
         self.place_expense_details()
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page
         """
         # if instance of AdjustExpenses, back button should go back to ViewBudget
@@ -631,7 +631,7 @@ class AddExpenses(Application):
         submit_button = ttk.Button(self.master, text="Submit", command= self.submit)
         submit_button.place(relx=0.4, rely=0.85, relwidth=0.2, relheight=0.1)
 
-    def place_expense_details(self):
+    def place_expense_details(self) -> None:
         """Places more buttons & labels which will be updated as user inputs expenses
         """
         # account details
@@ -695,7 +695,7 @@ class AddExpenses(Application):
                                         command= lambda x: self.change_expense())
         modify_option.place(relx=0.75, rely=0.71, relwidth=0.15, relheight=0.06)
 
-    def change_expense(self):
+    def change_expense(self) -> None:
         """Allows user to modify existing expense
         """
         if self.modify.get() == '':
@@ -717,7 +717,7 @@ class AddExpenses(Application):
                 self.amount_entry.insert(0, expense['amount'])
                 return
 
-    def submit_expenses(self):
+    def submit_expenses(self) -> None:
         """Allows user to submit expenses and go to ViewBudget
         """
         name            = self.name_entry.get()
@@ -764,7 +764,7 @@ class AddExpenses(Application):
         self.expenses.append(expense)
         self.place_expense_details()
 
-    def submit(self):
+    def submit(self) -> None:
         """Allows user to submit expenses and go to ViewBudget
         """
         self.submit_expenses()
@@ -777,7 +777,7 @@ class ViewBudget(Application):
     """Interface to view a budget and connection with predictions.py.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, budget=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -795,7 +795,7 @@ class ViewBudget(Application):
         self.prediction.view_graph()
         self.place_buttons_and_text()
 
-    def place_buttons_and_text(self):
+    def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page
         """
         label = tk.Label(self.master, text=self.budget, bg=BACKGROUND_COLOR_1)
@@ -839,7 +839,7 @@ class AdjustAccounts(NewBudget):
     Inherits from NewBudget to utilize the same screen
     with existing accounts already loaded in
     """
-    def __init__(self, master=None, budget=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -856,7 +856,7 @@ class AdjustAccounts(NewBudget):
         self.name_entry.configure(state=tk.DISABLED)
         self.place_account_details()
 
-    def submit_budget(self):
+    def submit_budget(self) -> None:
         """Allows user to submit budget and go to expenses
         """
         self.submit_account()
@@ -871,11 +871,13 @@ class AdjustExpenses(AddExpenses):
     Inherits from AddExpenses to utilize the same screen
     with existing accounts already loaded in.
     """
-    def __init__(self, master=None, budget=None, projections_database=None, budget_database=None):
+    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
             budget (str): name of budget
+            projections_database
+            budget_database
 
         """
         super().__init__(
