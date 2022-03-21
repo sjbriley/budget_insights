@@ -8,6 +8,7 @@ from tkinter import ttk
 from functools import partial
 import json
 from modules.projections_gui import projections_gui
+from typing import Optional
 
 from modules.budget_database import budget_dbhelper
 from modules.projections_database import projections_dbhelper
@@ -20,7 +21,7 @@ BACKGROUND_COLOR_1 = 'SlateGray4'
 BACKGROUND_COLOR_2 = 'SlateGray3'
 GEOMETRY = "1000x700"
 
-def center(size, width=True):
+def center(size: int, width: Optional[bool] = True) -> int:
     """Returns the center based on given size and current window
 
     Args:
@@ -37,7 +38,6 @@ def center(size, width=True):
     if width is True:
         return int((screen_width - size) / 2)
     return int((screen_height - size) / 2)
-
 class Application(tk.Frame):
     """Class which is inherited from for all interface sub classes
     Allows for ease of changing views from one page to another,
@@ -68,7 +68,7 @@ class Application(tk.Frame):
         quit_button = ttk.Button(self.master, text="Quit", command=self.master.destroy)
         quit_button.place(relx=0.9, rely=0.9, relwidth=0.08, relheight=0.08)
 
-    def change_view(self, destroy, create, budget=None, projection=None):
+    def change_view(self, destroy: tk.Frame, create: tk.Frame, budget:None, projection=None) -> None:
         """Helper function for changing pages and destroying instances.
 
         Args:
@@ -82,25 +82,25 @@ class Application(tk.Frame):
             child.destroy()
         if create in (ViewBudget, AddExpenses, AdjustAccounts, AdjustExpenses):
             create(
-                   master=self.master,
-                   budget=budget,
-                   budget_database=self.budget_database,
-                   projections_database=self.projections_database
-                   )
+                master=self.master,
+                budget=budget,
+                budget_database=self.budget_database,
+                projections_database=self.projections_database
+                )
         elif create == ViewProjection:
             create(
-                   master=self.master,
-                   projection=projection,
-                   budget_database=self.budget_database,
-                   projections_database=self.projections_database
-                   )
+                master=self.master,
+                projection=projection,
+                budget_database=self.budget_database,
+                projections_database=self.projections_database
+                )
         elif create == NewBudget and budget is not None:
             create(
-                   master=self.master,
-                   budget=budget,
-                   budget_database=self.budget_database,
-                   projections_database=self.projections_database
-                   )
+                master=self.master,
+                budget=budget,
+                budget_database=self.budget_database,
+                projections_database=self.projections_database
+                )
         else:
             create(master=self.master)
 
@@ -115,10 +115,10 @@ class Home(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.master = master
         self.place_buttons_and_text()
 
@@ -195,12 +195,12 @@ class ViewProjection(Application):
     Inherits from Application to allow changing of views.
     """
     def __init__(
-                 self,
-                 master=None,
-                 projection=None,
-                 projections_database=None,
-                 budget_database=None
-                 ):
+            self,
+            master=None,
+            projection=None,
+            projections_database=None,
+            budget_database=None
+            ):
         """
         Args:
             master (tk.Tk): root of GUI
@@ -208,10 +208,10 @@ class ViewProjection(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.master = master
         self.projection = projection
         self.place_buttons_and_text()
@@ -233,10 +233,10 @@ class NewProjection(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.master = master
         self.place_buttons_and_text()
 
@@ -307,10 +307,10 @@ class Budget(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.master = master
         self.place_buttons_and_text()
 
@@ -333,18 +333,20 @@ class Budget(Application):
         for count, current_budget in enumerate(budgets):
             # we need to use functools partial here instead of
             # lambda else the function calls will change
-            current_budget_button = (ttk.Button(self.master, text=current_budget[2],
-                                                command = partial(
-                                                                self.change_view,
-                                                                self.master,
-                                                                ViewBudget,
-                                                                budget=current_budget[2]
-                                                                ))
-                                     )
-            current_budget_button.place(relx = (0.1 + 0.2*int(count/5)),
-                                        rely=(0.3 + 0.1*(count%5-1)),
-                                        relwidth=0.19,
-                                        relheight=0.08)
+            current_budget_button = (
+                ttk.Button(self.master, text=current_budget[2],
+                command = partial(
+                                self.change_view,
+                                self.master,
+                                ViewBudget,
+                                budget=current_budget[2]
+                                )))
+            current_budget_button.place(
+                relx = (0.1 + 0.2*int(count/5)),
+                rely=(0.3 + 0.1*(count%5-1)),
+                relwidth=0.19,
+                relheight=0.08
+                )
 
         new_budget_button = ttk.Button(self.master, text="Create New Budget",
                                        command = lambda: self.change_view(self.master, NewBudget))
@@ -365,10 +367,10 @@ class NewBudget(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.master = master
         if budget is not None:
             self.accounts = json.loads(self.budget_database.get_accounts_by_name(budget))
@@ -390,12 +392,14 @@ class NewBudget(Application):
         """
         # if instance of AdjustAccounts, back button should go back to ViewBudget
         if isinstance(self, AdjustAccounts):
-            back_button = ttk.Button(self.master, text="Back",
-                                    command = lambda: self.change_view(
-                                        self.master,
-                                        ViewBudget,
-                                        budget=self.name_entry.get()
-                                        ))
+            back_button = ttk.Button(
+                self.master,
+                text="Back",
+                command = lambda: self.change_view(
+                self.master,
+                ViewBudget,
+                budget=self.name_entry.get()
+                ))
         else:
             back_button = ttk.Button(self.master, text="Back",
                                     command = lambda: self.change_view(self.master, Budget))
@@ -530,12 +534,12 @@ class NewBudget(Application):
         self.warning.configure(text = '')
 
         account = {
-                   'name': account_name,
-                   'balance': account_balance,
-                   'interest': interest,
-                   'type': str(type_act),
-                   'compound': str(compounded)
-                   }
+            'name': account_name,
+            'balance': account_balance,
+            'interest': interest,
+            'type': str(type_act),
+            'compound': str(compounded)
+            }
 
         # replace existing account with same name if one exists
         for count, existing_account in enumerate(self.accounts):
@@ -576,10 +580,10 @@ class AddExpenses(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.name = budget
         self.master = master
         self.expenses = []
@@ -596,19 +600,23 @@ class AddExpenses(Application):
         """
         # if instance of AdjustExpenses, back button should go back to ViewBudget
         if isinstance(self, AdjustExpenses):
-            back_button = ttk.Button(self.master, text="Back",
-                                    command = lambda: self.change_view(
-                                        self.master,
-                                        ViewBudget,
-                                        budget=self.name
-                                        ))
+            back_button = ttk.Button(
+                self.master,
+                text="Back",
+                command = lambda: self.change_view(
+                self.master,
+                ViewBudget,
+                budget=self.name
+                ))
         else:
-            back_button = ttk.Button(self.master, text="Back",
-                                    command = lambda: self.change_view(
-                                        self.master,
-                                        NewBudget,
-                                        budget=self.name
-                                        ))
+            back_button = ttk.Button(
+                self.master,
+                text="Back",
+                command = lambda: self.change_view(
+                self.master,
+                NewBudget,
+                budget=self.name
+                ))
         back_button.place(relx=0.02, rely=0.9, relwidth=0.08, relheight=0.08)
 
         # name of the budget
@@ -738,12 +746,12 @@ class AddExpenses(Application):
         self.warning.configure(text = '')
 
         expense = {
-                   'name': name,
-                   'description': description,
-                   'amount': amount,
-                   'type': str(expense_income),
-                   'frequency': str(frequency)
-                   }
+            'name': name,
+            'description': description,
+            'amount': amount,
+            'type': str(expense_income),
+            'frequency': str(frequency)
+            }
 
         # replace existing account with same name if one exists
         for count, existing_expense in enumerate(self.expenses):
@@ -777,10 +785,10 @@ class ViewBudget(Application):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.budget = budget
         self.master = master
         self.prediction = predictions.BudgetPredictions(name=budget, master=self.master)
@@ -839,10 +847,10 @@ class AdjustAccounts(NewBudget):
 
         """
         super().__init__(
-                        master=master,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.accounts = json.loads(self.budget_database.get_accounts_by_name(budget))
         self.name_entry.insert(0, budget)
         self.name_entry.configure(state=tk.DISABLED)
@@ -871,11 +879,11 @@ class AdjustExpenses(AddExpenses):
 
         """
         super().__init__(
-                        master=master,
-                        budget=budget,
-                        projections_database=projections_database,
-                        budget_database=budget_database
-                        )
+                master=master,
+                budget=budget,
+                projections_database=projections_database,
+                budget_database=budget_database
+                )
         self.expenses = json.loads(self.budget_database.get_expenses_by_name(budget))
         self.place_expense_details()
         
