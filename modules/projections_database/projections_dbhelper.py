@@ -4,16 +4,16 @@ changes to budget.db
 import sqlite3
 import json
 import sys
+from typing import Union
 
 # insert path two directories up (main project dir)
 import os.path
 sys.path.insert(0, os.path.join(__file__ ,"../.."))
 
-
 class ProjectionsDatabase():
     """Allows user to connect to database using sqlite and
     make changes or get strored information"""
-    def __init__(self, name='budget.db'):
+    def __init__(self, name:str ='budget.db') -> None:
         self.con = sqlite3.connect(name)
         self.cur = self.con.cursor()
         self.create_db()
@@ -37,7 +37,7 @@ class ProjectionsDatabase():
             print(exception)
             return False
 
-    def create_projection(self, name, budget):
+    def create_projection(self, name: str, budget: str) -> bool:
         """Inserts row into budget table with new budget
         Inputs:
             name (str): name of budget
@@ -62,7 +62,7 @@ class ProjectionsDatabase():
             return False
         return True
 
-    def insert_event(self, name, events):
+    def insert_event(self, name: str, events: str) -> bool:
         """Inserts into events column in table projections
         Parameters:
             name (str): name of budget
@@ -78,7 +78,7 @@ class ProjectionsDatabase():
             print(exception)
             return False
 
-    def get_events(self, name):
+    def get_events(self, name: str) -> Union[str, bool]:
         """Returns events from projections for a name
         Parameters:
             name (str): name of budget
@@ -95,7 +95,7 @@ class ProjectionsDatabase():
             print(exception)
             return False
 
-    def get_id_by_name(self, name):
+    def get_id_by_name(self, name: str) -> Union[str, bool]:
         """Returns id of a projection by it's name
         Parameters:
             name (str): name of projection
@@ -111,7 +111,7 @@ class ProjectionsDatabase():
             print(exception)
             return False
 
-    def get_by_name(self, name):
+    def get_by_name(self, name: str) -> Union[str, bool]:
         """Searches table projections by name
         parameters:
             name (str): name of budget
@@ -126,18 +126,19 @@ class ProjectionsDatabase():
             print(exception)
             return False
 
-    def get_all_projections(self):
+    def get_all_projections(self) -> str:
         """Returns results (list) containing all projections"""
         command = "SELECT * FROM projections"
         self.cur.execute(command)
         results = self.cur.fetchall()
         return results
 
-    def delete_table(self):
+    def delete_table(self) -> bool:
         """Deletes entire tables from database"""
         command = "DROP TABLE projections"
         self.cur.execute(command)
         self.con.commit()
+        return True
 
     def __del__(self):
         """Closes the database on deletion of instance"""
