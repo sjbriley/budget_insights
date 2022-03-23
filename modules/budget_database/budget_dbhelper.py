@@ -5,6 +5,7 @@ import sqlite3
 import sys
 import os
 import json
+from typing import Union
 
 # insert path two directories up (main project dir)
 import os.path
@@ -13,12 +14,12 @@ sys.path.insert(0, os.path.join(__file__ ,"../.."))
 class BudgetDatabase():
     """Allows user to connect to database using sqlite and
     make changes or get strored information"""
-    def __init__(self, name='budget.db'):
+    def __init__(self, name: str = 'budget.db'):
         self.con = sqlite3.connect(name)
         self.cur = self.con.cursor()
         self.create_db()
 
-    def create_db(self):
+    def create_db(self) -> bool:
         """Executes command to create budgets table if not exists
         
         Returns:
@@ -41,7 +42,7 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def create_budget(self, name, accounts):
+    def create_budget(self, name: str, accounts: str) -> bool:
         """Inserts row into budget table with new budget
         
         Args:
@@ -71,14 +72,14 @@ class BudgetDatabase():
             return False
         return True
 
-    def get_id_by_name(self, name):
+    def get_id_by_name(self, name:str) -> Union[str, bool]:
         """Returns id of a budget by it's name
         
         Args:
             name (str): name of budget
             
         Returns:
-            str: the ID associated with the budget
+            str | bool: the ID associated with the budget
             
         """
         try:
@@ -90,7 +91,7 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def update_expenses(self, name, expenses):
+    def update_expenses(self, name:str, expenses:str) -> bool:
         """Inserts expenses into the budget database
         
         Args:
@@ -111,14 +112,14 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def get_by_name(self, name):
+    def get_by_name(self, name: str) -> Union[list, bool]:
         """Searches table budgets by name
         
         Args:
             name (str): name of budget
             
         Returns:
-            list: information associated with budget
+            list | bool: information associated with budget
             
         """
         try:
@@ -130,7 +131,7 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def get_all_budgets(self):
+    def get_all_budgets(self) -> list:
         """Returns every row contained in budgets table
         
         Returns:
@@ -142,7 +143,7 @@ class BudgetDatabase():
         results = self.cur.fetchall()
         return results
 
-    def get_accounts_by_name(self, name):
+    def get_accounts_by_name(self, name:str) -> Union[list, bool]:
         """Returns accounts for a budget
         
         Args:
@@ -161,7 +162,7 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def get_expenses_by_name(self, name):
+    def get_expenses_by_name(self, name:str) -> Union[list, bool]:
         """Returns expenses for a budget
         
         Args:
@@ -180,7 +181,7 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def update_accounts(self, name, accounts):
+    def update_accounts(self, name:str, accounts:str) -> bool:
         """Updates accounts for an existing budget
         
         Args:
@@ -201,7 +202,7 @@ class BudgetDatabase():
             exception_handler()
             return False
 
-    def delete_table(self):
+    def delete_table(self) -> bool:
         """Deletes entire tables from database
         
         Returns:
@@ -216,11 +217,11 @@ class BudgetDatabase():
         except:
             return False
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Closes the database on deletion of instance"""
         self.con.close()
 
-def exception_handler():
+def exception_handler() -> None:
     exc_type, exc_obj, exc_tb = sys.exc_info()
     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
     print(exc_type, fname, exc_tb.tb_lineno)

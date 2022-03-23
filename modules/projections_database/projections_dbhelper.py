@@ -140,7 +140,7 @@ class ProjectionsDatabase():
         self.con.commit()
         return True
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Closes the database on deletion of instance"""
         self.con.close()
 """

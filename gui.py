@@ -68,7 +68,10 @@ class Application(tk.Frame):
         quit_button = ttk.Button(self.master, text="Quit", command=self.master.destroy)
         quit_button.place(relx=0.9, rely=0.9, relwidth=0.08, relheight=0.08)
 
-    def change_view(self, destroy: tk.Frame, create: tk.Frame, budget: Optional[str] = None, projection=None) -> None:
+    def change_view(
+        self, destroy: tk.Frame, create: tk.Frame,
+        budget: Optional[str] = None, projection=None
+        ) -> None:
         """Helper function for changing pages and destroying instances.
 
         Args:
@@ -126,17 +129,50 @@ class Home(Application):
         """Places buttons & labels on page"""
         budget_button = ttk.Button(self.master, text="Budgets",
                                    command = lambda: self.change_view(self.master, Budget))
-        budget_button.place(x = center(500), rely=0.1, width=500, relheight=0.3)
+        budget_button.place(x = center(500), rely=0.1, width=500, relheight=0.2)
 
         projection_button = ttk.Button(self.master, text="Projections",
                                        command = lambda: self.change_view(self.master, Projections))
-        projection_button.place(x = center(500), rely=0.5, width=500, relheight=0.3)
+        projection_button.place(x = center(500), rely=0.4, width=500, relheight=0.2)
 
+        info_button = ttk.Button(self.master, text="Information & How to Use",
+                                       command = lambda: self.change_view(self.master, info))
+        info_button.place(x = center(500), rely=0.7, width=500, relheight=0.2)
+        
+class info(Application):
+    
+    def __init__(self, master: tk.Tk):
+        super().__init__(master=master)
+        self.master = master
+        label = tk.Label(self.master, text="Information & How to Use", bg=BACKGROUND_COLOR_1)
+        label.configure(font=LARGE_FONT)
+        label.place(rely=0.08, relheight=0.1, relwidth=1)
+        
+        back_button = ttk.Button(self.master, text="Back",
+                                 command = lambda: self.change_view(self.master, Home))
+        back_button.place(relx=0.02, rely=0.9, relwidth=0.08, relheight=0.08)
+        
+        bg_label = tk.Label(self.master, bg=BACKGROUND_COLOR_2)
+        bg_label.place(relx=0.08, rely=0.18, relwidth=0.84, relheight=0.54)
+        
+        instructions = tk.Label(self.master, bg=BACKGROUND_COLOR_2, justify = tk.LEFT, text =
+                                '1. Create a budget on the "Budgets" screen'
+                                '\n\n2. Add expenses, income, investments to the budget'
+                                '\n\n3. View your current budget using provided tables and graphs'
+                                '\n\n4. Using a budget that you have created, create a Projection under the "Projections" screen'
+                                '\n\n5. Add events to your projections, such as a change in housing expenses or a tax return'
+                                '\n\n6. View how these forecasted events affect your budget in the future'
+                                '\n\n7. Continue adding events years outward to have an idea of your estimated financial situation'
+                                '\n\n8. Export data to either a .csv or an Excel Workbook'
+                                '\n\n9. Create several budgets and projections'
+                                )
+        instructions.configure(font=SMALL_FONT)
+        instructions.place(relx = 0.08, rely = 0.21)
 class Projections(Application):
     """Interface which displays all existing projections or ability to go to new one
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master=None, projections_database=None, budget_database=None) -> None:
+    def __init__(self, master: tk.Tk, projections_database=None, budget_database=None) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -218,9 +254,16 @@ class ViewProjection(Application):
 
     def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page"""
-        label = tk.Label(self.master, text=self.projection, bg=BACKGROUND_COLOR_1)
+        label = tk.Label(self.master, text=f'Projection: {self.projection}', bg=BACKGROUND_COLOR_1)
         label.configure(font=LARGE_FONT)
         label.place(x = center(300), rely=0.05, relheight=0.1, width=300)
+        
+        back_button = ttk.Button(self.master, text="Back",
+                                 command = lambda: self.change_view(self.master, Projections))
+        back_button.place(relx=0.02, rely=0.9, relwidth=0.08, relheight=0.08)
+
+        bg_label = tk.Label(self.master, bg=BACKGROUND_COLOR_2)
+        bg_label.place(relx=0.08, rely=0.18, relwidth=0.84, relheight=0.54)
 
 class NewProjection(Application):
     """Interface which allows user to create projection
@@ -572,7 +615,10 @@ class AddExpenses(Application):
     """Interface which allows expenses to be added to new budget.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
+    def __init__(
+        self, master: tk.Tk, budget: Optional[str] = None,
+        projections_database=None, budget_database=None
+        ) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -777,7 +823,10 @@ class ViewBudget(Application):
     """Interface to view a budget and connection with predictions.py.
     Inherits from Application to allow changing of views.
     """
-    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
+    def __init__(
+        self, master: tk.Tk, budget: Optional[str] = None,
+        projections_database=None, budget_database=None
+        ) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -798,7 +847,7 @@ class ViewBudget(Application):
     def place_buttons_and_text(self) -> None:
         """Places buttons & labels on page
         """
-        label = tk.Label(self.master, text=self.budget, bg=BACKGROUND_COLOR_1)
+        label = tk.Label(self.master, text=f'Budget: {self.budget}', bg=BACKGROUND_COLOR_1)
         label.configure(font=LARGE_FONT)
         label.place(x = center(300), rely=0.05, relheight=0.1, width=300)
 
@@ -839,7 +888,10 @@ class AdjustAccounts(NewBudget):
     Inherits from NewBudget to utilize the same screen
     with existing accounts already loaded in
     """
-    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
+    def __init__(
+        self, master: tk.Tk, budget: Optional[str] = None,
+        projections_database=None, budget_database=None
+        ) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -871,7 +923,10 @@ class AdjustExpenses(AddExpenses):
     Inherits from AddExpenses to utilize the same screen
     with existing accounts already loaded in.
     """
-    def __init__(self, master: tk.Tk, budget: Optional[str] = None, projections_database=None, budget_database=None) -> None:
+    def __init__(
+        self, master: tk.Tk, budget: Optional[str] = None,
+        projections_database=None, budget_database=None
+        ) -> None:
         """
         Args:
             master (tk.Tk): root of GUI

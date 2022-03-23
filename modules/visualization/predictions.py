@@ -8,6 +8,7 @@ import numpy as np
 import random
 import datetime
 import sys
+import tkinter as tk
 
 # insert path two directories up (main project dir)
 import os.path
@@ -22,7 +23,7 @@ SLATEGRAY4 = '#6C7B8B'
 class BudgetPredictions:
     """Generates budget graphs & tables for viewing
     """
-    def __init__(self, name, master):
+    def __init__(self, name: str, master: tk.Tk) -> None:
         """
         Args:
             master (tk.Tk): root of GUI
@@ -39,7 +40,7 @@ class BudgetPredictions:
         self.master = master
         self.canvas = None
 
-    def view_bar(self):
+    def view_bar(self) -> None:
         """Displays a bar graph of budget.
         """
         # clear any previous displays
@@ -72,7 +73,7 @@ class BudgetPredictions:
         self.canvas = FigureCanvasTkAgg(figure, self.master)
         self.canvas.get_tk_widget().place(relx=0.05, rely=0.15, relwidth=0.9, relheight=0.6)
         
-    def view_graph(self):
+    def view_graph(self) -> None:
         """Displays a graph of budget.
         """
         # clear any previous displays
