@@ -11,3 +11,18 @@ __pycache__/
 
 # sphinx builds
 build/
+
+# python build info
+*.egg-info
+
+# testing/linting
+.nox
+pylama_report
+.pytest_cache
+
+# pytest-cov
+.coverage
+coverage.xml
+htmlcov/
+
+dist

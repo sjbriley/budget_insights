@@ -1,6 +1,1 @@
-pylint==2.10.2
-PyQt5==5.15.4
-pyinstaller==4.5.1
-matplotlib==3.4.3
-Sphinx==4.2.0
-karma-sphinx-theme==0.0.8
+matplotlib==3.5.3
