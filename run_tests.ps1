@@ -15,10 +15,13 @@ if (-Not (Test-Path -Path virtualenv)) {
 
 ./virtualenv/scripts/activate
 
+pip install nox
+nox --verbose
+if ($LASTEXITCODE -ne 0){
+    exit $LASTEXITCODE
+}
+
 if ($build) {
     python setup.py sdist
     pip install .
 }
-
-pip install nox
-nox --verbose

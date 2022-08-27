@@ -10,5 +10,10 @@ layout.drawio is used with draw.io to visualize GUI layout as well as design UML
 ## Setup - Windows
 ```
 .\run_tests.ps1 [-build]
+```
+The -build flag will create a dist and install it, which then can be utilized by running:
+```
 budget
 ```
+## Testing, Linting, & Coverage
+This project utilizes pytest for running unit tests, pytest-cov for viewing code coverage, pylama for linting, and nox for a testing environment. If code coverage falls under 80%, linting errors exist, or any unit tests fail then the build fails.
